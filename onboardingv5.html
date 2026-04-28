@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matter&Co — Onboarding</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+
+:root {
+  --bg-dark: #0D0D0D;
+  --bg-card: #1A1A1A;
+  --bg-card-hover: #222222;
+  --purple: #8B5CF6;
+  --purple-dim: rgba(139,92,246,0.15);
+  --yellow: #F5A623;
+  --yellow-dim: rgba(245,166,35,0.12);
+  --red: #E3342F;
+  --green: #10B981;
+  --blue-accent: #3B82F6;
+  --white: #FFFFFF;
+  --text-primary: #F0F0F0;
+  --text-secondary: #A0A0A0;
+  --text-muted: #666666;
+  --border: rgba(255,255,255,0.08);
+  --border-light: rgba(255,255,255,0.12);
+  --font-display: 'Outfit', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --radius: 12px;
+  --radius-lg: 20px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.3);
+  --shadow-lg: 0 12px 48px rgba(0,0,0,0.4);
+  --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--font-body);color:var(--text-primary);background:var(--bg-dark);line-height:1.7;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+
+/* ═══ CRITICAL: Screen visibility ═══ */
+.screen{display:none !important;min-height:100vh;padding:100px 40px 40px;animation:fadeIn 0.6s ease;}
+.screen.active{display:block !important;}
+/* Flex screens override block when active */
+.screen.welcome-screen.active{display:flex !important;}
+.screen.final-screen.active{display:flex !important;}
+
+/* ═══ PROGRESS ═══ */
+.progress-bar{position:fixed;top:0;left:0;width:100%;height:3px;background:rgba(255,255,255,0.05);z-index:1001;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--purple),var(--yellow));width:0%;transition:width 0.6s cubic-bezier(0.16,1,0.3,1);}
+
+/* ═══ HEADER ═══ */
+.header{position:fixed;top:3px;right:0;left:0;z-index:999;display:flex;justify-content:space-between;align-items:center;padding:14px 40px;background:rgba(13,13,13,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.header-left{display:flex;align-items:center;gap:24px;}
+.header-logo img{height:32px;object-fit:contain;}
+.header-step{font-family:var(--font-display);font-size:12px;font-weight:600;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;}
+.welcome-banner{display:none;font-family:var(--font-display);font-size:12px;font-weight:600;color:var(--yellow);letter-spacing:1px;text-transform:uppercase;background:var(--yellow-dim);padding:5px 16px;border-radius:30px;}
+.welcome-banner.visible{display:inline-block;}
+
+/* ═══ ANIMATIONS ═══ */
+@keyframes fadeIn{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+@keyframes slideUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
+@keyframes scaleIn{from{opacity:0;transform:scale(0.92);}to{opacity:1;transform:scale(1);}}
+@keyframes orbitItemIn{from{opacity:0;transform:scale(0.5);}to{opacity:1;transform:scale(1);}}
+
+.container{max-width:960px;margin:0 auto;text-align:center;}
+
+/* ═══ TYPOGRAPHY ═══ */
+h1,h2,h3{font-family:var(--font-display);color:var(--white);line-height:1.15;}
+h1{font-size:clamp(2rem,4.5vw,3.2rem);font-weight:800;letter-spacing:-1.2px;}
+h2{font-size:clamp(1.4rem,3vw,2rem);font-weight:700;letter-spacing:-0.5px;margin-bottom:14px;}
+h3{font-size:clamp(1rem,1.8vw,1.25rem);font-weight:600;margin-bottom:8px;}
+p{margin-bottom:10px;color:var(--text-secondary);font-size:15px;}
+
+.label-tag{display:inline-block;font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--bg-dark);background:var(--yellow);padding:6px 18px;border-radius:30px;margin-bottom:20px;}
+.purpose-text{font-family:var(--font-display);font-size:clamp(1.3rem,2.5vw,1.8rem);font-weight:700;color:var(--white);border-left:4px solid var(--purple);padding:16px 24px;margin:28px auto;max-width:600px;text-align:left;background:var(--purple-dim);border-radius:0 var(--radius) var(--radius) 0;line-height:1.4;}
+
+/* ═══ BUTTONS ═══ */
+.btn{display:inline-flex;align-items:center;gap:10px;padding:13px 30px;border:none;border-radius:60px;font-family:var(--font-display);font-size:14px;font-weight:600;cursor:pointer;transition:var(--transition);text-decoration:none;}
+.btn-primary{background:var(--purple);color:var(--white);}
+.btn-primary:hover{background:#7C3AED;transform:translateY(-2px);box-shadow:0 8px 30px rgba(139,92,246,0.3);}
+.btn-yellow{background:var(--yellow);color:var(--bg-dark);}
+.btn-yellow:hover{background:#E09100;transform:translateY(-2px);box-shadow:0 8px 30px rgba(245,166,35,0.3);}
+.btn-outline{background:transparent;color:var(--text-secondary);border:1.5px solid var(--border-light);}
+.btn-outline:hover{border-color:var(--purple);color:var(--white);transform:translateY(-2px);}
+.btn-ghost{background:transparent;color:var(--text-muted);padding:13px 20px;}
+.btn-ghost:hover{color:var(--white);}
+.nav-buttons{display:flex;justify-content:space-between;align-items:center;margin-top:48px;padding-top:28px;border-top:1px solid var(--border);}
+
+/* ═══ CARDS ═══ */
+.card{background:var(--bg-card);border-radius:var(--radius-lg);padding:28px;border:1px solid var(--border);transition:var(--transition);text-align:left;}
+.card:hover{border-color:var(--border-light);background:var(--bg-card-hover);transform:translateY(-3px);}
+.section{margin-top:52px;}
+.section-sm{margin-top:32px;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+
+/* ═══════════ SCREEN 1 — WELCOME ═══════════ */
+.welcome-screen{
+  flex-direction:column;justify-content:center;align-items:center;
+  text-align:center;background:var(--bg-dark);
+  padding:80px 40px 60px;position:relative;overflow:hidden;
+}
+.welcome-screen::before{content:'';position:absolute;top:-20%;right:-15%;width:500px;height:500px;background:radial-gradient(circle,rgba(139,92,246,0.08) 0%,transparent 70%);pointer-events:none;}
+.welcome-screen::after{content:'';position:absolute;bottom:-15%;left:-10%;width:400px;height:400px;background:radial-gradient(circle,rgba(245,166,35,0.06) 0%,transparent 70%);pointer-events:none;}
+.welcome-screen h1{color:var(--white);font-size:clamp(2.2rem,5vw,3.6rem);margin-bottom:8px;animation:slideUp 0.8s ease both;}
+.welcome-screen h1 .hl{color:var(--purple);}
+.welcome-screen .subtitle{color:var(--text-muted);font-size:17px;margin-bottom:28px;animation:slideUp 0.8s ease 0.1s both;}
+.welcome-screen .intro-text{color:var(--text-secondary);max-width:560px;font-size:15px;line-height:1.8;animation:slideUp 0.8s ease 0.2s both;text-align:center;margin-left:auto;margin-right:auto;}
+.welcome-screen .tagline{font-family:var(--font-display);font-size:clamp(1rem,2vw,1.35rem);font-weight:700;color:var(--purple);margin:24px 0;letter-spacing:-0.3px;animation:slideUp 0.8s ease 0.3s both;}
+.name-editor{display:flex;align-items:center;justify-content:center;gap:12px;margin:24px 0 32px;animation:slideUp 0.8s ease 0.35s both;}
+.name-editor input{background:rgba(255,255,255,0.05);border:1px solid var(--border-light);border-radius:60px;padding:13px 24px;color:var(--white);font-family:var(--font-display);font-size:15px;font-weight:500;outline:none;width:280px;transition:var(--transition);}
+.name-editor input::placeholder{color:var(--text-muted);}
+.name-editor input:focus{border-color:var(--purple);background:rgba(255,255,255,0.08);}
+.welcome-cta{animation:slideUp 0.8s ease 0.45s both;}
+.welcome-reveal{display:none;flex-direction:column;align-items:center;text-align:center;overflow:hidden;}
+.welcome-reveal.visible{display:flex;animation:slideUp 0.6s ease both;}
+
+/* ═══ LEADERS ═══ */
+.leaders-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;text-align:left;}
+.leader-card{background:var(--bg-card);border-radius:var(--radius-lg);padding:20px;border:1px solid var(--border);display:flex;gap:14px;align-items:flex-start;transition:var(--transition);cursor:pointer;}
+.leader-card:hover{border-color:var(--border-light);background:var(--bg-card-hover);}
+.leader-photo{width:56px;height:56px;border-radius:50%;flex-shrink:0;background:var(--purple-dim);display:flex;align-items:center;justify-content:center;color:var(--purple);font-family:var(--font-display);font-weight:700;font-size:18px;overflow:hidden;}
+.leader-photo img{width:100%;height:100%;object-fit:cover;}
+.leader-info h4{font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--white);margin-bottom:2px;}
+.leader-info .leader-role{font-size:12px;color:var(--purple);font-weight:600;margin-bottom:6px;}
+.leader-info .leader-desc{font-size:12px;color:var(--text-secondary);line-height:1.6;display:none;}
+.leader-card.expanded .leader-desc{display:block;}
+.leader-expand-hint{font-size:10px;color:var(--text-muted);margin-top:2px;}
+.leader-card.expanded .leader-expand-hint{display:none;}
+
+/* ═══ ECOSYSTEM ORBIT ═══ */
+.ecosystem-btn-wrapper{text-align:center;margin:28px 0;}
+.ecosystem-orbit{position:relative;width:480px;height:480px;margin:32px auto;display:none;}
+.ecosystem-orbit.visible{display:block;animation:scaleIn 0.5s ease;}
+.orbit-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:90px;height:90px;border-radius:50%;background:var(--bg-card);border:2px solid var(--purple);display:flex;align-items:center;justify-content:center;box-shadow:0 0 40px rgba(139,92,246,0.2);z-index:2;overflow:hidden;}
+.orbit-center img{width:55px;height:auto;}
+.orbit-ring{position:absolute;top:50%;left:50%;width:400px;height:400px;transform:translate(-50%,-50%);border:1px dashed rgba(255,255,255,0.06);border-radius:50%;}
+.orbit-item{position:absolute;width:120px;height:64px;background:rgba(255,255,255,0.95);border:1px solid var(--border);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;padding:10px;transition:var(--transition);animation:orbitItemIn 0.5s ease both;}
+.orbit-item:hover{border-color:var(--purple);transform:scale(1.08);box-shadow:0 0 20px rgba(139,92,246,0.15);}
+.orbit-item img{max-width:90px;max-height:36px;object-fit:contain;}
+.orbit-item .orbit-fb{font-family:var(--font-display);font-weight:700;font-size:12px;color:#333;}
+
+/* ═══ VALUES ═══ */
+.value-card{background:var(--bg-card);border-radius:var(--radius-lg);padding:28px;text-align:center;border:1px solid var(--border);transition:var(--transition);border-top:3px solid transparent;}
+.value-card:nth-child(1){border-top-color:var(--red);}
+.value-card:nth-child(2){border-top-color:var(--purple);}
+.value-card:nth-child(3){border-top-color:var(--yellow);}
+.value-card:hover{border-color:var(--border-light);transform:translateY(-3px);}
+.value-card h3{font-size:1.15rem;}
+.value-card p{font-size:13px;}
+.behavior-col{text-align:left;}
+.behavior-col h3{margin-bottom:14px;}
+.behavior-list{list-style:none;padding:0;}
+.behavior-list li{padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--text-secondary);display:flex;align-items:flex-start;gap:10px;}
+.behavior-list li::before{content:'';width:7px;height:7px;border-radius:50%;margin-top:6px;flex-shrink:0;}
+.behavior-good li::before{background:var(--purple);}
+.behavior-bad li::before{background:var(--red);}
+
+/* ═══ SERVICE CARDS ═══ */
+.service-card{background:var(--bg-card);border-radius:var(--radius-lg);padding:32px;border:1px solid var(--border);transition:var(--transition);text-align:left;}
+.service-card:hover{border-color:var(--border-light);transform:translateY(-3px);}
+.service-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:14px;}
+.service-list{list-style:none;padding:0;margin-top:14px;}
+.service-list li{padding:4px 0;font-size:12px;color:var(--text-secondary);position:relative;padding-left:16px;}
+.service-list li::before{content:'→';position:absolute;left:0;color:var(--text-muted);font-size:11px;}
+
+/* ═══ ROLEPLAY ═══ */
+.company-form{background:var(--bg-card);border-radius:var(--radius-lg);padding:32px;border:1px solid var(--border);text-align:left;max-width:560px;margin:0 auto;}
+.form-group{margin-bottom:18px;}
+.form-group label{display:block;font-family:var(--font-display);font-weight:600;font-size:13px;color:var(--text-secondary);margin-bottom:6px;}
+.form-group input{width:100%;padding:11px 16px;border:1px solid var(--border-light);border-radius:var(--radius);font-family:var(--font-body);font-size:14px;color:var(--white);background:rgba(255,255,255,0.04);outline:none;transition:var(--transition);}
+.form-group input:focus{border-color:var(--purple);box-shadow:0 0 0 3px var(--purple-dim);}
+.form-group input::placeholder{color:var(--text-muted);}
+.company-preview{display:none;background:var(--bg-card);border-radius:var(--radius-lg);padding:28px;border:2px solid var(--purple);text-align:center;margin-top:20px;animation:scaleIn 0.5s ease;max-width:560px;margin-left:auto;margin-right:auto;}
+.company-preview.visible{display:block;}
+.company-preview-logo{width:72px;height:72px;border-radius:14px;background:var(--purple-dim);display:flex;align-items:center;justify-content:center;color:var(--purple);font-family:var(--font-display);font-weight:800;font-size:26px;margin:0 auto 14px;overflow:hidden;}
+.company-preview-logo img{width:100%;height:100%;object-fit:cover;}
+.challenge-list{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px;text-align:left;}
+.challenge-item{background:rgba(255,255,255,0.03);border:1px solid var(--border);padding:10px 14px;border-radius:var(--radius);font-size:12px;color:var(--text-secondary);display:flex;align-items:center;gap:8px;}
+.challenge-item::before{content:'⚠';font-size:14px;}
+
+/* ═══ TRAIL ═══ */
+.trail-container{position:relative;text-align:left;}
+.trail-line{position:absolute;left:26px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--purple),var(--yellow),var(--green));border-radius:2px;}
+.trail-step{position:relative;padding-left:66px;padding-bottom:24px;}
+.trail-dot{position:absolute;left:16px;top:4px;width:22px;height:22px;border-radius:50%;background:var(--bg-dark);border:3px solid var(--purple);z-index:1;cursor:pointer;transition:var(--transition);}
+.trail-dot:hover{transform:scale(1.2);}
+.trail-step:nth-child(2) .trail-dot{border-color:var(--blue-accent);}
+.trail-step:nth-child(3) .trail-dot{border-color:var(--yellow);}
+.trail-step:nth-child(4) .trail-dot{border-color:var(--green);}
+.trail-step:nth-child(5) .trail-dot{border-color:#8B5CF6;}
+.trail-step:nth-child(6) .trail-dot{border-color:var(--red);}
+.trail-card{background:var(--bg-card);border-radius:var(--radius-lg);padding:24px;border:1px solid var(--border);cursor:pointer;transition:var(--transition);}
+.trail-card:hover{border-color:var(--border-light);}
+.trail-card-header{display:flex;justify-content:space-between;align-items:center;}
+.trail-card-header h3{margin-bottom:0;font-size:0.95rem;}
+.trail-toggle{font-size:18px;color:var(--text-muted);transition:var(--transition);}
+.trail-card.expanded .trail-toggle{transform:rotate(45deg);color:var(--purple);}
+.trail-card-body{display:none;margin-top:16px;padding-top:16px;border-top:1px solid var(--border);}
+.trail-card.expanded .trail-card-body{display:block;}
+.trail-section-label{font-family:var(--font-display);font-weight:700;font-size:11px;color:var(--purple);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;margin-top:14px;}
+.trail-section-label:first-child{margin-top:0;}
+.trail-result{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);padding:14px;border-radius:var(--radius);font-weight:600;color:var(--green);margin-top:14px;font-size:13px;}
+
+/* ═══ MINIGAME ═══ */
+.minigame-area{display:grid;grid-template-columns:1fr 280px;gap:28px;margin-top:20px;text-align:left;}
+.problems-column h3,.solutions-column h3{margin-bottom:14px;font-size:12px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);}
+.solutions-column{position:sticky;top:80px;align-self:start;}
+.problem-chip{background:var(--bg-card);border:1.5px solid var(--border);border-radius:var(--radius);padding:11px 14px;margin-bottom:6px;font-size:12px;color:var(--text-secondary);cursor:pointer;transition:var(--transition);user-select:none;}
+.problem-chip:hover{border-color:var(--purple);}
+.problem-chip.selected{border-color:var(--purple);background:var(--purple-dim);color:var(--white);}
+.problem-chip .chip-answer{display:none;margin-top:4px;font-size:10px;font-weight:600;padding:2px 6px;border-radius:4px;}
+.problem-chip.answered .chip-answer{display:inline-block;}
+.problem-chip.correct{border-color:var(--green);background:rgba(16,185,129,0.06);}
+.problem-chip.correct .chip-answer{color:var(--green);background:rgba(16,185,129,0.12);}
+.problem-chip.incorrect{border-color:var(--red);background:rgba(227,52,47,0.06);}
+.problem-chip.incorrect .chip-answer{color:var(--red);background:rgba(227,52,47,0.12);}
+.solution-zone{background:var(--bg-card);border:2px dashed var(--border-light);border-radius:var(--radius);padding:12px 16px;margin-bottom:8px;font-family:var(--font-display);font-weight:600;font-size:13px;color:var(--text-secondary);cursor:pointer;transition:var(--transition);text-align:center;}
+.solution-zone:hover{border-color:var(--purple);color:var(--white);}
+.minigame-feedback{display:none;text-align:center;padding:28px;border-radius:var(--radius-lg);margin-top:20px;animation:scaleIn 0.4s ease;}
+.minigame-feedback.visible{display:block;}
+.minigame-feedback.good{background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.2);}
+.minigame-feedback.bad{background:rgba(227,52,47,0.06);border:1px solid rgba(227,52,47,0.2);}
+.score-display{font-family:var(--font-display);font-size:44px;font-weight:900;margin:8px 0;color:var(--white);}
+
+/* ═══ TOOL CARDS ═══ */
+.tool-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin-top:16px;}
+.tool-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 14px;text-align:center;transition:var(--transition);display:flex;flex-direction:column;align-items:center;gap:10px;}
+.tool-card:hover{border-color:var(--border-light);transform:translateY(-3px);}
+.tool-card-img{width:56px;height:56px;border-radius:12px;object-fit:contain;background:rgba(255,255,255,0.04);padding:6px;}
+.tool-card-name{font-family:var(--font-display);font-weight:600;font-size:13px;color:var(--text-primary);}
+
+/* ═══ ACCORDIONS ═══ */
+.accordion{border-radius:var(--radius);overflow:hidden;margin-bottom:6px;background:var(--bg-card);border:1px solid var(--border);text-align:left;}
+.accordion-header{padding:16px 20px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-family:var(--font-display);font-weight:600;font-size:14px;color:var(--white);transition:var(--transition);}
+.accordion-header:hover{background:var(--bg-card-hover);}
+.accordion-arrow{transition:var(--transition);color:var(--text-muted);}
+.accordion.open .accordion-arrow{transform:rotate(180deg);color:var(--purple);}
+.accordion-body{max-height:0;overflow:hidden;transition:max-height 0.4s ease;}
+.accordion-body-inner{padding:0 20px 16px;font-size:13px;color:var(--text-secondary);line-height:1.8;}
+.accordion-body-inner ul{list-style:none;padding:0;}
+.accordion-body-inner ul li{padding:3px 0;padding-left:14px;position:relative;}
+.accordion-body-inner ul li::before{content:'•';position:absolute;left:0;color:var(--purple);}
+
+/* ═══ HUB ═══ */
+.hub-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:800px;margin:0 auto;}
+.hub-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px;text-align:center;transition:var(--transition);text-decoration:none;color:var(--white);display:flex;flex-direction:column;align-items:center;gap:8px;}
+.hub-card:hover{border-color:var(--purple);transform:translateY(-3px);}
+.hub-card-icon{width:44px;height:44px;border-radius:10px;background:var(--purple-dim);display:flex;align-items:center;justify-content:center;font-size:20px;}
+.hub-card h4{font-family:var(--font-display);font-weight:600;font-size:13px;}
+.hub-main-btn{text-align:center;margin-top:28px;}
+
+/* ═══ FINAL ═══ */
+.final-screen{
+  flex-direction:column;justify-content:center;align-items:center;
+  text-align:center;background:var(--bg-dark);
+  padding:100px 40px 40px;position:relative;overflow:hidden;
+}
+.final-screen::before{content:'';position:absolute;top:10%;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(139,92,246,0.06) 0%,transparent 60%);pointer-events:none;}
+.final-screen h1{color:var(--white);margin-bottom:14px;}
+.final-screen p{color:var(--text-secondary);max-width:550px;}
+.steps-list{list-style:none;padding:0;text-align:left;max-width:360px;margin:28px auto;}
+.steps-list li{padding:10px 0;border-bottom:1px solid var(--border);color:var(--text-secondary);font-size:14px;display:flex;align-items:center;gap:12px;}
+.step-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--border-light);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;}
+.closing-text{font-family:var(--font-display);font-size:clamp(0.95rem,1.8vw,1.1rem);color:var(--text-muted);margin:28px 0 14px;font-style:italic;}
+.video-section{margin:28px 0;width:100%;max-width:480px;}
+.video-section label{display:block;color:var(--text-muted);font-size:12px;margin-bottom:6px;}
+.video-section input{width:100%;padding:11px 16px;border:1px solid var(--border-light);border-radius:var(--radius);background:rgba(255,255,255,0.04);color:var(--white);font-size:13px;outline:none;}
+.video-section input:focus{border-color:var(--purple);}
+.video-preview{margin-top:14px;border-radius:var(--radius);overflow:hidden;}
+.video-preview iframe{width:100%;aspect-ratio:16/9;border:none;border-radius:var(--radius);}
+.final-motto{font-family:var(--font-display);font-size:clamp(1.4rem,2.8vw,2rem);font-weight:800;background:linear-gradient(135deg,var(--purple),var(--yellow));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-top:36px;letter-spacing:-0.5px;}
+
+/* ═══ FOOTER ═══ */
+.footer{text-align:center;padding:24px 20px;border-top:1px solid var(--border);color:var(--text-muted);font-size:12px;margin-top:48px;}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:768px){
+  .screen{padding:90px 18px 40px !important;}
+  .header{padding:12px 18px;}
+  .header-logo img{height:26px;}
+  .grid-2,.grid-3{grid-template-columns:1fr;}
+  .leaders-grid{grid-template-columns:1fr;}
+  .minigame-area{grid-template-columns:1fr;}
+  .solutions-column{position:static;}
+  .challenge-list{grid-template-columns:1fr;}
+  .name-editor{flex-direction:column;}
+  .name-editor input{width:100%;}
+  .nav-buttons{flex-direction:column-reverse;gap:10px;}
+  .nav-buttons .btn{width:100%;justify-content:center;}
+  .welcome-screen,.final-screen{padding:80px 18px 40px !important;}
+  .hub-grid{grid-template-columns:1fr 1fr;max-width:100%;}
+  .ecosystem-orbit{width:320px;height:320px;}
+  .orbit-ring{width:270px;height:270px;}
+  .orbit-item{width:90px;height:50px;}
+  .orbit-item img{max-width:60px;max-height:26px;}
+  .orbit-center{width:66px;height:66px;}
+  .orbit-center img{width:40px;}
+  .tool-grid{grid-template-columns:repeat(2,1fr);}
+}
+</style>
+</head>
+<body>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<header class="header" id="mainHeader">
+  <div class="header-left">
+    <div class="header-logo"><img src="https://lirp.cdn-website.com/7fc54c2b/dms3rep/multi/opt/LOGO-COLORS-1920w.png" alt="Matter&Co" onerror="this.style.display='none'"></div>
+    <div class="header-step" id="headerStep">BOAS-VINDAS</div>
+  </div>
+  <div class="welcome-banner" id="welcomeBanner"></div>
+</header>
+
+<!-- ══════ SCREEN 1 ══════ -->
+<div class="screen welcome-screen active" id="screen1">
+  <div class="label-tag" style="animation:slideUp 0.6s ease both;">BEM-VINDO</div>
+  <h1 id="welcomeTitle">Aqui começou sua jornada<br>com a <span class="hl">Matter&CO</span></h1>
+  <p class="subtitle">Este portal foi criado para te guiar dentro do ecossistema Matter.</p>
+  <div class="name-editor">
+    <input type="text" id="nameInput" placeholder="Digite seu nome aqui..." maxlength="40">
+    <button class="btn btn-primary" onclick="setName()" style="white-space:nowrap;">Confirmar</button>
+  </div>
+  <div id="welcomeReveal" class="welcome-reveal">
+    <div class="intro-text"><p>Você não está entrando em uma empresa.<br>Você está entrando em um ecossistema que resolve problemas reais com estratégia, tecnologia e execução.</p></div>
+    <div class="tagline">IA First. Human Always.</div>
+    <p class="intro-text">Aqui, você vai entender como pensamos, como operamos e como entregamos resultado.</p>
+    <div class="welcome-cta" style="margin-top:18px;"><button class="btn btn-yellow" onclick="goTo(2)" style="font-size:16px;padding:15px 38px;">Iniciar Jornada →</button></div>
+  </div>
+</div>
+
+<!-- ══════ SCREEN 2 ══════ -->
+<div class="screen" id="screen2">
+  <div class="container">
+    <span class="label-tag">Introdução</span>
+    <h1>O que é a Matter&Co</h1>
+    <p style="max-width:640px;font-size:16px;margin:16px auto 0;">A Matter&Co é um ecossistema de inteligência de negócios que integra empresas com expertises complementares para resolver problemas complexos de organizações que querem crescer.</p>
+    <p style="max-width:640px;margin:0 auto;">Atuamos de forma sinérgica, conectando estratégia, pessoas, tecnologia e dados para gerar impacto real nos negócios.</p>
+    <div class="section"><span class="label-tag">Nosso propósito</span><div class="purpose-text">Fazer a diferença para quem quer fazer a diferença</div></div>
+    <div class="section"><span class="label-tag">Como pensamos</span>
+      <div class="grid-2" style="margin-top:8px;">
+        <div class="card"><h3 style="color:var(--purple);">IA First</h3><ul class="service-list" style="margin-top:10px;"><li>Processa grandes volumes de dados</li><li>Identifica padrões e tendências</li><li>Simula cenários</li><li>Automatiza decisões</li></ul></div>
+        <div class="card"><h3 style="color:var(--yellow);">Human Always</h3><ul class="service-list" style="margin-top:10px;"><li>Define prioridades reais</li><li>Ajusta decisões com contexto</li><li>Conecta estratégia à realidade</li><li>Garante execução com qualidade</li></ul></div>
+      </div>
+    </div>
+    <div class="section"><span class="label-tag">Quem faz acontecer</span><p>Você vai trabalhar em um ecossistema liderado por pessoas que constroem, executam e evoluem negócios todos os dias.</p><div class="leaders-grid" style="margin-top:16px;" id="leadersGrid"></div></div>
+    <div class="section"><span class="label-tag">Empresas do ecossistema</span>
+      <p style="font-size:16px;">Cada empresa resolve uma parte do problema.<br><strong style="color:var(--white);">Juntas, resolvem o todo.</strong></p>
+      <div class="ecosystem-btn-wrapper"><button class="btn btn-primary" id="ecoBtn" onclick="toggleEcosystem()">Explorar o Ecossistema Matter</button></div>
+      <div class="ecosystem-orbit" id="ecoOrbit">
+        <div class="orbit-ring"></div>
+        <div class="orbit-center"><img src="https://lirp.cdn-website.com/7fc54c2b/dms3rep/multi/opt/LOGO-COLORS-1920w.png" alt="Matter&Co"></div>
+      </div>
+    </div>
+    <div class="nav-buttons"><button class="btn btn-ghost" onclick="goTo(1)">← Voltar</button><button class="btn btn-primary" onclick="goTo(3)">Próximo →</button></div>
+    <div class="footer">©2026 Matter&Co. Todos os direitos reservados.</div>
+  </div>
+</div>
+
+<!-- ══════ SCREEN 3 ══════ -->
+<div class="screen" id="screen3">
+  <div class="container">
+    <span class="label-tag">Cultura</span><h1>Nossos valores</h1>
+    <div class="grid-3" style="margin-top:24px;">
+      <div class="value-card"><h3>Chama no peito</h3><p>Assume a responsabilidade, resolve e não se esconde do jogo.</p></div>
+      <div class="value-card"><h3>Puxa pra cima</h3><p>Mantém a energia alta, respeita as pessoas e faz acontecer.</p></div>
+      <div class="value-card"><h3>Fecha junto</h3><p>Confia, sustenta o time e não solta a mão no meio do caminho.</p></div>
+    </div>
+    <div class="section"><div class="grid-2">
+      <div class="behavior-col"><h3 style="color:var(--purple);">Comportamentos que valorizamos</h3><ul class="behavior-list behavior-good"><li>Assume responsabilidade sem esperar</li><li>Busca resultado com consistência</li><li>Trabalha com intensidade e direção</li><li>Colabora com o time</li><li>Se posiciona e traz soluções</li><li>Aprende rápido e compartilha conhecimento</li></ul></div>
+      <div class="behavior-col"><h3 style="color:var(--red);">Comportamentos que não fazem parte da Matter</h3><ul class="behavior-list behavior-bad"><li>Dar desculpas ao invés de resolver</li><li>Não assumir erros</li><li>Baixa intensidade</li><li>Falta de compromisso com resultado</li><li>Desrespeito ou falta de colaboração</li><li>Individualismo</li></ul></div>
+    </div></div>
+    <div class="nav-buttons"><button class="btn btn-ghost" onclick="goTo(2)">← Voltar</button><button class="btn btn-primary" onclick="goTo(4)">Próximo →</button></div>
+    <div class="footer">©2026 Matter&Co. Todos os direitos reservados.</div>
+  </div>
+</div>
+
+<!-- ══════ SCREEN 4 ══════ -->
+<div class="screen" id="screen4">
+  <div class="container">
+    <span class="label-tag">Como resolvemos problemas</span><h1>Como atuamos no mercado</h1>
+    <p style="max-width:640px;font-size:16px;margin:16px auto 0;">Nosso modelo é baseado em três pilares que se complementam para resolver qualquer desafio empresarial.</p>
+    <div class="grid-3" style="margin-top:28px;">
+      <div class="service-card"><h3>Matter Service</h3><p style="font-size:13px;">Consultoria estratégica que combina inteligência de mercado, planejamento e execução para acelerar o crescimento.</p><ul class="service-list"><li>Smart 360º</li><li>Smart Modelo</li><li>Growth Machine</li><li>Governança e sucessão</li><li>Orçamento empresarial</li><li>Jornada Umanse</li><li>Recrutamento, Hunting e Seleção</li><li>Brand Design</li><li>Brand Strategy</li><li>Brand Growth</li></ul></div>
+      <div class="service-card"><h3>Matter Tech</h3><p style="font-size:13px;">Tecnologia e IA aplicadas para otimizar processos e transformar dados em decisões inteligentes.</p><ul class="service-list"><li>Mapeamento e automação de processos</li><li>Desenvolvimento de aplicativos</li><li>IA aplicada ao negócio</li><li>Testes e qualidade de software</li><li>Outsourcing tecnológico</li><li>Oráculo da Empresa</li><li>Transformação Cultural com IA</li><li>Agente de Copy</li><li>AI Design Flux</li><li>Branding AI</li><li>Pro Builder</li></ul></div>
+      <div class="service-card"><h3>Matter Educação</h3><p style="font-size:13px;">Capacitação e desenvolvimento de talentos para preparar pessoas e empresas para os desafios do futuro.</p><ul class="service-list"><li>AI Next</li><li>AI Shift</li><li>Imersão China</li><li>SXSW</li><li>TD Matter</li></ul></div>
+    </div>
+    <div class="nav-buttons"><button class="btn btn-ghost" onclick="goTo(3)">← Voltar</button><button class="btn btn-primary" onclick="goTo(5)">Próximo →</button></div>
+    <div class="footer">©2026 Matter&Co. Todos os direitos reservados.</div>
+  </div>
+</div>
+
+<!-- ══════ SCREEN 5 ══════ -->
+<div class="screen" id="screen5">
+  <div class="container">
+    <span class="label-tag">Roleplay</span><h1>Agora começa o jogo</h1>
+    <p style="font-size:16px;max-width:550px;margin:12px auto 0;">Você não será apenas um colaborador.<br><strong style="color:var(--white);">Você será responsável por uma empresa.</strong></p>
+    <div class="section"><h2>Crie sua empresa</h2>
+      <div class="company-form" id="companyForm">
+        <div class="form-group"><label>Nome da empresa</label><input type="text" id="companyName" placeholder="Ex: TechVision Brasil"></div>
+        <div class="form-group"><label>Segmento</label><input type="text" id="companySegment" placeholder="Ex: Tecnologia, Varejo, Saúde..."></div>
+        <div class="form-group"><label>Logo da empresa (URL ou descrição)</label><input type="text" id="companyLogo" placeholder="Cole a URL da logo ou descreva"></div>
+        <div style="margin-top:6px;"><label style="cursor:pointer;display:inline-flex;align-items:center;gap:8px;"><input type="file" id="companyLogoFile" accept="image/*" style="display:none;" onchange="handleLogoUpload(event)"><span class="btn btn-outline" style="font-size:12px;padding:7px 14px;">📁 Upload de logo</span></label><span id="uploadStatus" style="font-size:11px;color:var(--text-muted);margin-left:8px;"></span></div>
+      </div>
+      <div class="section-sm" style="max-width:560px;margin-left:auto;margin-right:auto;"><h3>Contexto</h3><p>Sua empresa tem potencial, mas enfrenta desafios:</p>
+        <div class="challenge-list"><div class="challenge-item">Falta de direção estratégica</div><div class="challenge-item">Problemas de equipe</div><div class="challenge-item">Baixa eficiência operacional</div><div class="challenge-item">Dificuldade de crescimento</div></div>
+        <p style="margin-top:14px;">Você vai resolver isso passando pelo ecossistema Matter.</p>
+      </div>
+      <div style="text-align:center;margin-top:20px;"><button class="btn btn-yellow" onclick="createCompany()">Criar minha empresa →</button></div>
+      <div class="company-preview" id="companyPreview"><div class="company-preview-logo" id="companyPreviewLogo"></div><h2 id="companyPreviewName" style="margin-bottom:2px;"></h2><p id="companyPreviewSegment" style="color:var(--text-muted);font-size:13px;"></p><p style="margin-top:10px;font-size:13px;color:var(--purple);font-weight:600;">Empresa criada com sucesso!</p></div>
+    </div>
+    <div class="nav-buttons"><button class="btn btn-ghost" onclick="goTo(4)">← Voltar</button><button class="btn btn-primary" onclick="goTo(6)">Próximo →</button></div>
+    <div class="footer">©2026 Matter&Co. Todos os direitos reservados.</div>
+  </div>
+</div>
+
+<!-- ══════ SCREEN 6 ══════ -->
+<div class="screen" id="screen6">
+  <div class="container">
+    <span class="label-tag">Trilha</span><h1>Sua empresa precisa evoluir</h1>
+    <p style="font-size:16px;max-width:640px;margin:12px auto 0;">Você vai passar por cada empresa da Matter como cliente. Cada etapa representa um problema — e uma solução.</p>
+    <div class="section trail-container" id="trailContainer"></div>
+    <div style="text-align:center;margin-top:28px;"><button class="btn btn-yellow" onclick="goTo(7)" style="font-size:16px;padding:14px 36px;">Iniciar missão →</button></div>
+    <div class="nav-buttons"><button class="btn btn-ghost" onclick="goTo(5)">← Voltar</button><button class="btn btn-primary" onclick="goTo(7)">Próximo →</button></div>
+    <div class="footer">©2026 Matter&Co. Todos os direitos reservados.</div>
+  </div>
+</div>
+
+<!-- ══════ SCREEN 7 ══════ -->
+<div class="screen" id="screen7">
+  <div class="container" style="max-width:1040px;">
+    <span class="label-tag">Minigame</span><h1>Conecte o problema à solução</h1>
+    <p style="font-size:16px;max-width:600px;margin:12px auto 0;">Selecione um problema e depois clique na empresa que o resolve.</p>
+    <div class="minigame-area"><div class="problems-column"><h3>Problemas</h3><div id="problemsList"></div></div>
+      <div class="solutions-column"><h3>Empresas</h3><div id="solutionsList"></div><div style="margin-top:18px;text-align:center;"><button class="btn btn-yellow" onclick="checkMinigame()" style="width:100%;">Verificar</button><button class="btn btn-outline" onclick="resetMinigame()" style="width:100%;margin-top:8px;">Resetar</button></div></div>
+    </div>
+    <div class="minigame-feedback" id="minigameFeedback"><h3 id="feedbackTitle"></h3><div class="score-display" id="feedbackScore"></div><p id="feedbackText"></p></div>
+    <div class="nav-buttons"><button class="btn btn-ghost" onclick="goTo(6)">← Voltar</button><button class="btn btn-primary" onclick="goTo(8)">Próximo →</button></div>
+    <div class="footer">©2026 Matter&Co. Todos os direitos reservados.</div>
+  </div>
+</div>
+
+<!-- ══════ SCREEN 8 ══════ -->
+<div class="screen" id="screen8">
+  <div class="container">
+    <span class="label-tag">Ponto e Operação</span><h1>Como operamos no dia a dia</h1>
+    <div class="section"><h2>Ferramentas</h2><p>Você utilizará ferramentas que conectam toda a operação da Matter, garantindo organização, produtividade e visibilidade.</p><div class="tool-grid" id="toolGrid"></div></div>
+    <div class="section"><h2>Manual do Colaborador</h2><div id="accordionContainer"></div></div>
+    <div class="nav-buttons"><button class="btn btn-ghost" onclick="goTo(7)">← Voltar</button><button class="btn btn-primary" onclick="goTo(9)">Próximo →</button></div>
+    <div class="footer">©2026 Matter&Co. Todos os direitos reservados.</div>
+  </div>
+</div>
+
+<!-- ══════ SCREEN 9 ══════ -->
+<div class="screen" id="screen9">
+  <div class="container">
+    <span class="label-tag">Hub</span><h1>Seu centro de operação</h1>
+    <p style="font-size:16px;margin-top:12px;">Aqui estão todas as ferramentas que você vai utilizar no seu dia a dia.</p>
+    <div class="section"><h2>Acessos</h2>
+      <div class="hub-grid">
+        <a class="hub-card" href="https://mattercore-hub.lovable.app/" target="_blank"><div class="hub-card-icon">🏢</div><h4>Hub MatterCo</h4></a>
+        <a class="hub-card" href="https://gestao-de-talentos-matter.bolt.host/" target="_blank"><div class="hub-card-icon">👤</div><h4>App do Colaborador</h4></a>
+        <a class="hub-card" href="https://smartiecombr.sharepoint.com/sites/centralmatterco/PASTA%20PBLICA/Forms/AllItems.aspx?id=%2Fsites%2Fcentralmatterco%2FPASTA%20PBLICA%2FPROCEDIMENTOS&viewid=214ea863%2D44a2%2D402b%2Db01b%2Da4b2de8401bb" target="_blank"><div class="hub-card-icon">📋</div><h4>Procedimentos</h4></a>
+        <a class="hub-card" href="https://matter-beneficios.lovable.app/" target="_blank"><div class="hub-card-icon">🎁</div><h4>Benefícios</h4></a>
+      </div>
+    </div>
+    <div class="hub-main-btn"><a class="btn btn-yellow" href="https://portal-interno-matter.bolt.host/" target="_blank" style="font-size:16px;padding:15px 38px;">Portal Interno Matter →</a></div>
+    <div class="nav-buttons"><button class="btn btn-ghost" onclick="goTo(8)">← Voltar</button><button class="btn btn-primary" onclick="goTo(10)">Próximo →</button></div>
+    <div class="footer">©2026 Matter&Co. Todos os direitos reservados.</div>
+  </div>
+</div>
+
+<!-- ══════ SCREEN 10 ══════ -->
+<div class="screen final-screen" id="screen10">
+  <span class="label-tag" style="background:var(--purple);">Final</span>
+  <h1>Você está pronto para começar</h1>
+  <p style="margin-top:8px;">Agora você entende como pensamos, como operamos e como entregamos.<br>A partir daqui, começa sua jornada real.</p>
+  <div style="margin-top:28px;"><h3 style="color:var(--white);font-size:13px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;">Próximos passos</h3>
+    <ul class="steps-list"><li><span class="step-check">○</span>Receber notebook</li><li><span class="step-check">○</span>Cadastrar facial na porta</li><li><span class="step-check">○</span>Cadastrar digital na portaria</li><li><span class="step-check">○</span>Acessar o portal interno</li><li><span class="step-check">○</span>Iniciar suas atividades</li></ul>
+  </div>
+  <p class="closing-text">Aqui não é sobre estar na Matter.<br>É sobre construir algo que faz diferença.</p>
+  <div class="video-section"><label>Vídeo de boas-vindas — Roque</label><input type="text" id="videoLink" placeholder="Cole o link do vídeo (YouTube, Vimeo...)" oninput="previewVideo()"><div class="video-preview" id="videoPreview"></div></div>
+  <div style="margin-top:20px;"><a class="btn btn-yellow" href="https://portal-interno-matter.bolt.host/" target="_blank" style="font-size:17px;padding:16px 44px;">Entrar no Portal Interno →</a></div>
+  <div class="final-motto">Do it. Make it Matter.</div>
+  <div class="nav-buttons" style="border-top-color:var(--border);max-width:550px;width:100%;"><button class="btn btn-ghost" onclick="goTo(9)">← Voltar</button><span></span></div>
+  <div class="footer" style="border-top-color:rgba(255,255,255,0.04);">©2026 Matter&Co. Todos os direitos reservados.</div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+
+var cur=1,total=10,colName='',selProb=null,answers={},upLogo=null;
+var labels=['','BOAS-VINDAS','ECOSSISTEMA','CULTURA','COMO ATUAMOS','ROLEPLAY','TRILHA','MINIGAME','OPERAÇÃO','HUB','FINAL'];
+function $(id){return document.getElementById(id);}
+function st(id,t){var e=$(id);if(e)e.textContent=t;}
+
+window.goTo=function(n){
+  if(n<1||n>total)return;
+  var p=$('screen'+cur);if(p)p.classList.remove('active');
+  cur=n;
+  var nx=$('screen'+n);if(nx)nx.classList.add('active');
+  var f=$('progressFill');if(f)f.style.width=((n/total)*100)+'%';
+  st('headerStep',labels[n]||'');
+  window.scrollTo({top:0,behavior:'smooth'});
+  var b=$('welcomeBanner');
+  if(b){if(n>1&&n<10&&colName){b.textContent='Bem-vindo, '+colName;b.classList.add('visible');}else{b.classList.remove('visible');}}
+};
+
+window.setName=function(){
+  var inp=$('nameInput');if(!inp)return;
+  var name=inp.value.trim();
+  if(name){colName=name;var t=$('welcomeTitle');if(t)t.innerHTML='Seja bem-vindo,<br><span class="hl">'+name+'</span>';inp.style.borderColor='#10B981';var rv=$('welcomeReveal');if(rv)rv.classList.add('visible');}
+};
+var ni=$('nameInput');if(ni)ni.addEventListener('keydown',function(e){if(e.key==='Enter')window.setName();});
+
+window.toggleEcosystem=function(){
+  var o=$('ecoOrbit'),b=$('ecoBtn');if(!o||!b)return;
+  if(o.classList.contains('visible')){o.classList.remove('visible');b.textContent='Explorar o Ecossistema Matter';}
+  else{o.classList.add('visible');b.textContent='Fechar Ecossistema';}
+};
+
+function renderEco(){
+  var o=$('ecoOrbit');if(!o)return;
+  var logos=[
+    {n:'Smart',img:'https://i.pinimg.com/736x/8b/f2/5c/8bf25c9b21e290a8a177cfe8a2373f7a.jpg',fb:'Smart',cls:''},
+    {n:'Umanse',img:'https://umanse.com.br/wp-content/themes/umanse_rev_32/images/Logo-Rebuild-05-min.png?v=1622153849080',fb:'Umanse',cls:''},
+    {n:'AlmaBrands',img:'https://matterco.com.br/wp-content/uploads/2025/02/Group-1000005919.svg',fb:'AlmaBrands',cls:''},
+    {n:'Base2',img:'https://base2.com.br/wp-content/themes/thema_ba2/assets/img/logo-footer.svg',fb:'Base2',cls:''},
+    {n:'BaseLabs',img:'https://wordtest.baselabs.com.br/wp-content/uploads/2025/09/base-labs_azul.webp',fb:'BaseLabs',cls:''},
+    {n:'Academy',img:'https://irp.cdn-website.com/7fc54c2b/dms3rep/multi/Matter+academy.png',fb:'Academy',cls:''},
+    {n:'Direciona',img:'https://lirp.cdn-website.com/7fc54c2b/dms3rep/multi/opt/DIRECIONA+ME_MARCA_NORMAL_RGB-v1+(1)-1920w.png',fb:'Direciona',cls:''}
+  ];
+  var mob=window.innerWidth<769,r=mob?120:185,cnt=logos.length;
+  logos.forEach(function(l,i){
+    var ang=(2*Math.PI*i/cnt)-Math.PI/2;
+    var x=Math.cos(ang)*r,y=Math.sin(ang)*r;
+    var w=mob?90:120,h=mob?50:64;
+    var d=document.createElement('div');
+    d.className='orbit-item'+(l.cls?' '+l.cls:'');
+    d.style.left='calc(50% + '+x+'px - '+(w/2)+'px)';
+    d.style.top='calc(50% + '+y+'px - '+(h/2)+'px)';
+    d.style.animationDelay=(i*0.08)+'s';
+    d.innerHTML='<img src="'+l.img+'" alt="'+l.n+'" onerror="this.remove();this.parentElement.innerHTML=\'<span class=orbit-fb>'+l.fb+'</span>\'">';
+    o.appendChild(d);
+  });
+}
+
+var leaders=[
+  {n:'Roque Almeida',r:'CEO',p:'https://media.licdn.com/dms/image/v2/D4D03AQEO4hC6LVJkKA/profile-displayphoto-scale_400_400/B4DZiK8v9fHwAo-/0/1754677838193?e=1778716800&v=beta&t=Wxw4UceE5ZBdW6lHzW0mAjwbE4vMWzE0BaB_sIVBJcY',d:'Graduado em Administração pela UFMG, especialista em Finanças pela Fundação Dom Cabral. Carreira de mais de 25 anos. CEO do Grupo Matter&Co e investidor em empresas de tecnologia.',li:'https://www.linkedin.com/in/roque-almeida/'},
+  {n:'Chryslaine Navarro',r:'Head de Gestão do Grupo Matter',p:'https://media.licdn.com/dms/image/v2/D4D03AQFZ3rS6JHRZcg/profile-displayphoto-crop_800_800/B4DZnExyvHG8AI-/0/1759943016241?e=1778716800&v=beta&t=iqrpMVf7RZFeR-gYH90xk7QQlHbQ7aDKflKXOaQ1Bvc',d:'Graduada em Administração pelo UNIBH e pós-graduada em Controladoria e Finanças Corporativas. Atuante na área financeira e administrativa há mais de 10 anos.',li:'https://www.linkedin.com/in/chryslainenavarro/'},
+  {n:'Thalyta Muniz',r:'Diretora da Smart',p:'https://media.licdn.com/dms/image/v2/D4D03AQFRJIxEfzDYnQ/profile-displayphoto-shrink_800_800/B4DZcSHIeDIAAc-/0/1748355550131?e=1778716800&v=beta&t=gq7ijNKXJLejh6r1Kb1TI5wZvWGjXNQuuu4QSKhAkeo',d:'Graduada em Controladoria e Finanças pela UFMG. Diretora de consultoria da Smart Business Lab.',li:'https://www.linkedin.com/in/thalyta-lemos-muniz/'},
+  {n:'Patrícia Schneider',r:'Diretora da Umanse',p:'https://media.licdn.com/dms/image/v2/C4E03AQGFcpjf_cejEg/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1561565361329?e=1778716800&v=beta&t=CzzKAAZxtkOZAXUXM0eWiHg9Wxyp6cwYN93q88f8bBY',d:'Formada em Informática Industrial pelo CEFET-MG, mestre em Gestão de RH na Universidade de Lisboa. Co-fundadora da Smart, executou mais de 1000 projetos.',li:'https://www.linkedin.com/in/patr%C3%ADcia-schneider-cabral-661a871a/'},
+  {n:'Calebe Bezerra',r:'Diretor da AlmaBrands',p:'https://media.licdn.com/dms/image/v2/D4D03AQGHhstQ3tYMkA/profile-displayphoto-scale_200_200/B4DZ27c26hHwAY-/0/1776966401981?e=1778716800&v=beta&t=4ek4yscJ-FuFnZT7wD9cEbb_kNBagSrpq2CRyxBuXPM',d:'Designer gráfico e publicitário. Mais de 200 clientes. Diretor nacional de produto da ABEDESIGN.',li:'https://www.linkedin.com/in/calebebezerra/'},
+  {n:'Hugo Barros',r:'Diretor da BaseLabs',p:'https://media.licdn.com/dms/image/v2/D4D03AQHH9j_dui84Mg/profile-displayphoto-scale_400_400/B4DZh58Df7HwAg-/0/1754392445280?e=1778716800&v=beta&t=Yzv5ZbPU9NuUrIFwqM23fkbRA4M4widCcpPYSqDAXTQ',d:'Fundador da Base2 e da Crowdtest. Mais de 20 anos em testes de software.',li:'https://www.linkedin.com/in/hvbarros/'},
+  {n:'Robert Pereira',r:'Diretor Base2',p:'https://media.licdn.com/dms/image/v2/D4D03AQF4UjzBtU3M3g/profile-displayphoto-crop_800_800/B4DZjnApslH0AI-/0/1756222364931?e=1778716800&v=beta&t=wtdrxhpNFGgj12F8K-7uNFR4mhkz3vUdkt3_8gCL7Pg',d:'Sócio-fundador da Base2 Tecnologia, mais de 20 anos. CEO do meloQA.',li:'https://www.linkedin.com/in/robertpereirapinto/'},
+  {n:'Bárbara Menucci',r:'Diretora do Matter Academy',p:'https://media.licdn.com/dms/image/v2/D4D03AQEGFQj-9GoWpg/profile-displayphoto-shrink_800_800/B4DZYl7UBqHAAg-/0/1744393028126?e=1778716800&v=beta&t=q29fifRSa-ZR7aXB8eqPvoB8q7o_5e2Yk0U8rU4wrpI',d:'Especialista em Marketing e consultora em Estratégia Criativa e ESG.',li:'https://www.linkedin.com/in/b%C3%A1rbara-mundim/'}
+];
+function renderLeaders(){
+  var g=$('leadersGrid');if(!g)return;
+  g.innerHTML=leaders.map(function(l){
+    var ini=l.n.split(' ').map(function(w){return w[0];}).join('').slice(0,2);
+    var ph=l.p?'<img src="'+l.p+'" alt="'+l.n+'" onerror="this.remove();this.parentElement.textContent=\''+ini+'\'">':ini;
+    return '<a class="leader-card" href="'+l.li+'" target="_blank" style="text-decoration:none;color:inherit;" onclick="event.stopPropagation();"><div class="leader-photo">'+ph+'</div><div class="leader-info"><h4>'+l.n+' <span style="font-size:11px;color:var(--purple);vertical-align:middle;">in</span></h4><div class="leader-role">'+l.r+'</div><div class="leader-desc">'+l.d+'</div></div></a>';
+  }).join('');
+}
+
+window.handleLogoUpload=function(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(ev){upLogo=ev.target.result;st('uploadStatus',f.name);};r.readAsDataURL(f);};
+window.createCompany=function(){
+  var ne=$('companyName');if(!ne)return;var name=ne.value.trim();if(!name){ne.style.borderColor='var(--red)';return;}
+  var seg=$('companySegment'),lo=$('companyLogo');var segment=seg?seg.value.trim():'',logoUrl=lo?lo.value.trim():'';
+  var src=upLogo||logoUrl;var ini=name.split(' ').map(function(w){return w[0];}).join('').slice(0,2).toUpperCase();
+  var lc=$('companyPreviewLogo');if(lc){if(src){lc.innerHTML='<img src="'+src+'" onerror="this.remove();this.parentElement.textContent=\''+ini+'\'">';}else{lc.textContent=ini;}}
+  st('companyPreviewName',name);st('companyPreviewSegment',segment||'Sem segmento definido');
+  var pv=$('companyPreview');if(pv)pv.classList.add('visible');
+  var fm=$('companyForm');if(fm)fm.style.display='none';
+};
+
+var trail=[
+  {t:'Smart — Estratégia',pr:'Sua empresa não sabe para onde está indo. Decisões reativas, sem planejamento estruturado.',s:['Diagnóstico estratégico completo','Redefinição do modelo de negócio','Planejamento estratégico (Smart Route)','Estruturação da máquina comercial','Definição de KPIs','Roadmap claro de execução'],re:'Clareza de direção, foco estratégico e crescimento estruturado.'},
+  {t:'Umanse — Pessoas',pr:'A empresa cresce, mas o time não acompanha. Desalinhamento e baixa performance.',s:['Mapeamento de gargalos de cultura','Recrutamento e seleção','Jornada do colaborador','Avaliações de desempenho','Cultura organizacional forte','Alinhamento liderança-equipe'],re:'Time alinhado, produtivo e preparado.'},
+  {t:'AlmaBrands — Marca',pr:'A empresa não é percebida pelo mercado. Posicionamento inexistente e comunicação inconsistente.',s:['Diagnóstico de marca e mercado','Posicionamento estratégico','Identidade visual e verbal','Brandbook e design system','Marketing estratégico','Awareness e conversão'],re:'Marca forte, posicionada e relevante.'},
+  {t:'Base2 / BaseLabs — Tecnologia',pr:'Operação manual e pouco eficiente. Falta integração e uso inteligente de tecnologia.',s:['Mapeamento de processos','Oportunidades de automação','Soluções com IA','Sistemas e aplicativos','Dashboards operacionais','Testes e qualidade de software'],re:'Operação escalável, automatizada e eficiente.'},
+  {t:'Matter Academy — Educação',pr:'Time não evolui na velocidade do mercado. Falta capacitação.',s:['Formação em IA aplicada','Ferramentas digitais','Competências estratégicas','Treinamentos para líderes','Trilhas personalizadas','Experiências imersivas'],re:'Time preparado, atualizado e competitivo.'},
+  {t:'Integração do Ecossistema',pr:'A empresa resolve problemas isolados, mas não evolui de forma integrada.',s:['Integra estratégia, pessoas, marca, tecnologia e dados','Conecta todas as áreas','Execução com consistência','Crescimento estruturado','Vantagem competitiva sustentável'],re:'Empresa estruturada, escalável e preparada.'}
+];
+function renderTrail(){
+  var c=$('trailContainer');if(!c)return;
+  c.innerHTML='<div class="trail-line"></div>'+trail.map(function(s,i){
+    var lb=i<5?'Etapa '+(i+1)+' — ':'Etapa Final — ';
+    var hl=i<5?'Como pode ajudar':'Como o ecossistema resolve';
+    return '<div class="trail-step"><div class="trail-dot"></div><div class="trail-card" onclick="this.classList.toggle(\'expanded\')"><div class="trail-card-header"><h3>'+lb+s.t+'</h3><span class="trail-toggle">+</span></div><div class="trail-card-body"><div class="trail-section-label">Problema</div><p>'+s.pr+'</p><div class="trail-section-label">'+hl+'</div><ul class="service-list">'+s.s.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul><div class="trail-result">✓ '+s.re+'</div></div></div></div>';
+  }).join('');
+}
+
+var probs=[
+  {t:'A empresa cresce, mas sem direção clara',a:'Smart'},{t:'Alta rotatividade de funcionários',a:'Umanse'},
+  {t:'A marca não se diferencia no mercado',a:'AlmaBrands'},{t:'Processos manuais e repetitivos',a:'Base2'},
+  {t:'A equipe não acompanha a evolução do mercado',a:'Matter Academy'},{t:'Crescimento sem previsibilidade',a:'Smart'},
+  {t:'Falta de cultura organizacional clara',a:'Umanse'},{t:'Comunicação inconsistente com o mercado',a:'AlmaBrands'},
+  {t:'Falta de automação nos processos',a:'Base2'},{t:'Liderança despreparada para o crescimento',a:'Umanse'},
+  {t:'Baixo reconhecimento da marca',a:'AlmaBrands'},{t:'Equipe com baixa capacidade analítica',a:'Matter Academy'},
+  {t:'Muitas iniciativas, poucos resultados',a:'Smart'},{t:'Conflitos internos frequentes',a:'Umanse'},
+  {t:'Posicionamento confuso no mercado',a:'AlmaBrands'},{t:'Operação lenta e pouco eficiente',a:'Base2'},
+  {t:'Resistência a mudanças dentro da equipe',a:'Umanse'},{t:'A estratégia existe, mas não é executada',a:'Smart'},
+  {t:'Equipe não sabe como utilizar IA para maior desempenho',a:'Matter Academy'}
+];
+var comps=['Smart','Umanse','AlmaBrands','Base2','Matter Academy'];
+function shuf(a){var b=a.slice();for(var i=b.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=b[i];b[i]=b[j];b[j]=t;}return b;}
+function renderMini(){
+  var sh=shuf(probs),pl=$('problemsList');
+  if(pl)pl.innerHTML=sh.map(function(p,i){return '<div class="problem-chip" data-index="'+i+'" data-answer="'+p.a+'" onclick="window.selProb(this)">'+p.t+'<div class="chip-answer"></div></div>';}).join('');
+  var sl=$('solutionsList');if(sl)sl.innerHTML=comps.map(function(c){return '<div class="solution-zone" onclick="window.assignCo(\''+c+'\')">'+c+'</div>';}).join('');
+  answers={};selProb=null;
+}
+window.selProb=function(el){document.querySelectorAll('.problem-chip').forEach(function(p){p.classList.remove('selected');});el.classList.add('selected');selProb=el;};
+window.assignCo=function(co){if(!selProb)return;answers[selProb.dataset.index]=co;var ch=selProb.querySelector('.chip-answer');if(ch){ch.textContent='→ '+co;ch.style.display='inline-block';}selProb.classList.remove('selected');selProb.style.borderColor='var(--purple)';selProb.style.background='var(--purple-dim)';selProb=null;};
+window.checkMinigame=function(){
+  var ok=0,tot=probs.length;
+  document.querySelectorAll('.problem-chip').forEach(function(c){
+    var idx=c.dataset.index,ca=c.dataset.answer,ua=answers[idx];
+    c.classList.remove('selected');c.classList.add('answered');var ae=c.querySelector('.chip-answer');
+    if(ua===ca){ok++;c.classList.add('correct');c.classList.remove('incorrect');if(ae)ae.textContent='✓ '+(ua||'—');}
+    else{c.classList.add('incorrect');c.classList.remove('correct');if(ae)ae.textContent=(ua?'✗ '+ua:'—')+' → '+ca;}
+  });
+  var pct=Math.round((ok/tot)*100);var fb=$('minigameFeedback');if(fb){fb.classList.add('visible');fb.className='minigame-feedback visible '+(pct>=70?'good':'bad');}
+  st('feedbackScore',ok+'/'+tot);st('feedbackTitle',pct>=70?'Você pensou como a Matter.':'Reveja como resolvemos problemas no ecossistema.');st('feedbackText',pct+'% de acerto');
+};
+window.resetMinigame=function(){var fb=$('minigameFeedback');if(fb)fb.classList.remove('visible');renderMini();};
+
+function renderTools(){
+  var g=$('toolGrid');if(!g)return;
+  var tools=[
+    {n:'Microsoft 365',i:'https://logos-world.net/wp-content/uploads/2021/02/Microsoft-Office-365-Logo-500x281.png'},
+    {n:'ChatGPT',i:'https://chatgptaihub.com/wp-content/uploads/2023/06/ChatGpt-logo-With-colour-Background-and-features-ChatGPT-Name.png'},
+    {n:'Claude',i:'https://freepnglogo.com/images/all_img/claude-ai-logo-d862.png'},
+    {n:'Gamma',i:'https://vectorseek.com/wp-content/uploads/2025/07/Gamma-Ai-Logo-PNG-SVG-Vector.png'},
+    {n:'NotebookLM',i:'https://images.seeklogo.com/logo-png/61/2/notebooklm-logo-png_seeklogo-617841.png'},
+    {n:'Ponto Eletrônico',i:''}
+  ];
+  g.innerHTML=tools.map(function(t){
+    var img=t.i?'<img class="tool-card-img" src="'+t.i+'" alt="'+t.n+'" onerror="this.style.display=\'none\'">':'<div class="tool-card-img" style="display:flex;align-items:center;justify-content:center;font-size:24px;background:var(--purple-dim);color:var(--purple);">⏱</div>';
+    return '<div class="tool-card">'+img+'<div class="tool-card-name">'+t.n+'</div></div>';
+  }).join('');
+}
+
+var manual=[
+  {t:'Vestimenta',c:'<ul><li>Não há exigência de uniforme, mas é fundamental manter boa aparência e bom senso.</li><li>Prefira roupas sociais ou casuais discretas.</li><li>É proibido o uso de roupas de times ou com mensagens impróprias.</li><li>Evite roupas curtas, decotadas ou transparentes.</li><li>Em reuniões com clientes, utilize roupas sóbrias e formais.</li><li>Sua imagem representa a empresa.</li></ul>'},
+  {t:'Tratamento dos Equipamentos',c:'<ul><li>Utilize equipamentos apenas para fins profissionais.</li><li>Evite instalar programas pessoais nos dispositivos corporativos.</li><li>Não consuma alimentos próximos aos equipamentos.</li><li>Em caso de perda ou roubo, informe imediatamente o gestor e o RH.</li><li>Organize sua mesa e desligue aparelhos ao sair.</li></ul>'},
+  {t:'Tratamento do Escritório',c:'<ul><li>Mantenha o ambiente limpo e organizado.</li><li>Desligue o ar-condicionado e apague as luzes ao sair.</li><li>Utilize espaços comuns com respeito.</li><li>Evite barulhos excessivos.</li><li>O escritório é um espaço coletivo.</li></ul>'},
+  {t:'Horário de Trabalho',c:'<ul><li>Respeite o horário de entrada, pausa e saída.</li><li>Seja pontual.</li><li>Atrasos e faltas devem ser comunicados previamente.</li></ul>'},
+  {t:'Emissão de Nota Fiscal — PJs',c:'<ul><li>Emissão e envio da NF até o primeiro dia útil de cada mês.</li><li>O atraso pode impactar o fechamento financeiro.</li><li>Certifique-se de que as informações estão corretas.</li></ul>'},
+  {t:'Assinatura de E-mail',c:'<ul><li>Manter o modelo padrão de assinatura corporativa.</li><li>Nome completo, cargo, e-mail, telefone, endereço e logotipo.</li><li>Não adicionar frases, imagens pessoais ou emojis.</li></ul>'},
+  {t:'Recepção de Clientes',c:'<ul><li>Receba todos com cordialidade e postura profissional.</li><li>Pão de queijo: retirar do congelador e assar com 2h de antecedência.</li><li>Prepare café e água antes da reunião.</li><li>O primeiro contato reflete a imagem da empresa.</li></ul>'},
+  {t:'Férias',c:'<ul><li>Programar com antecedência mínima de 30 dias.</li><li>Solicite ao gestor e aguarde confirmação do RH.</li><li>Pagamento ocorre até 2 dias antes do início.</li></ul>'},
+  {t:'Divulgação de Materiais',c:'<ul><li>Qualquer publicação deve ser previamente autorizada.</li><li>É proibida divulgação de informações internas sem autorização.</li><li>Mantenha discrição nas redes sociais.</li></ul>'},
+  {t:'Linguagem Matter&Co',c:'<ul><li>Linguagem clara, respeitosa e profissional.</li><li>Evite gírias e abreviações.</li><li>Mantenha tom educado e cortês.</li></ul>'}
+];
+function renderAcc(){
+  var c=$('accordionContainer');if(!c)return;
+  c.innerHTML=manual.map(function(t,i){return '<div class="accordion" id="acc'+i+'"><div class="accordion-header" onclick="window.togAcc('+i+')">'+t.t+'<span class="accordion-arrow">▼</span></div><div class="accordion-body" id="accBody'+i+'"><div class="accordion-body-inner">'+t.c+'</div></div></div>';}).join('');
+}
+window.togAcc=function(i){var a=$('acc'+i),b=$('accBody'+i);if(!a||!b)return;if(a.classList.contains('open')){a.classList.remove('open');b.style.maxHeight='0';}else{a.classList.add('open');b.style.maxHeight=b.scrollHeight+'px';}};
+
+window.previewVideo=function(){
+  var inp=$('videoLink'),pv=$('videoPreview');if(!inp||!pv)return;
+  var l=inp.value.trim();if(!l){pv.innerHTML='';return;}
+  var eu='';try{
+    if(l.includes('youtube.com/watch')){var id=new URL(l).searchParams.get('v');if(id)eu='https://www.youtube.com/embed/'+id;}
+    else if(l.includes('youtu.be/')){var id2=l.split('youtu.be/')[1];if(id2){id2=id2.split('?')[0];eu='https://www.youtube.com/embed/'+id2;}}
+    else if(l.includes('vimeo.com/')){var id3=l.split('vimeo.com/')[1];if(id3){id3=id3.split('?')[0];eu='https://player.vimeo.com/video/'+id3;}}
+  }catch(e){}
+  pv.innerHTML=eu?'<iframe src="'+eu+'" allowfullscreen></iframe>':'<p style="color:var(--text-muted);font-size:12px;margin-top:6px;">Cole um link do YouTube ou Vimeo válido.</p>';
+};
+
+renderLeaders();renderEco();renderTrail();renderMini();renderTools();renderAcc();goTo(1);
+});
+</script>
+</body>
+</html>
